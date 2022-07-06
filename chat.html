@@ -1,0 +1,204 @@
+<html>
+    <head>
+        <title>CHAT</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" href="https://souravsaha1234.000webhostapp.com/removeadd/removeadd.css">
+        <script src="https://souravsaha1234.000webhostapp.com/secure/file.js"></script>
+
+        <script src="https://souravsaha1234.000webhostapp.com/personal_diary/style/myalert.js"></script>
+        <link rel="stylesheet" href="https://souravsaha1234.000webhostapp.com/personal_diary/style/alert_style.css">
+        <style>
+            .rcvchat
+            {
+                position:relative;
+                width: max-content;
+                left: 10px;
+                background-color: rgb(81, 17, 21);
+                padding: 10px;
+                border-radius: 10px;
+                color: white;
+            }
+            .sendchat
+            {
+                position:relative;
+                width: max-content;
+                float: right;
+                right: 10px;
+                background-color:#3B7342;
+                padding: 10px;
+                border-radius: 10px;
+                color: white;
+            }
+            .holdkeyboard
+            {
+                margin-top: 30px;
+                width: 1000px;
+                position: relative;
+                left: 20%;
+            }
+            body{
+                background-color: #BBD5D0;
+            }
+        </style>
+    </head>
+    <body onload="getCook()">
+        <div class="myalert_style" id="myalert">
+            <font id="alert_text" class="alert_text"></font>
+        </div>
+
+        <div>
+            <audio id="myAudio" hidden>
+                <source src="./audio.mp3" type="audio/mpeg">
+                Your browser does not support the audio element.
+            </audio>              
+        </div>
+
+        <div>
+            <div id="chatsection">
+               
+            </div>
+            <div id="txtsection" class="holdkeyboard">
+                <input type="text" placeholder="Text" id="msg" style="width: 800px;" class="form-control"><button onclick="sendData()" class="btn btn-primary" style="position: relative; bottom: 38px; left: 85%;">SEND</button>
+            </div>
+            
+        </div>
+
+        <script>
+            
+            var userId="";
+            var totalLength;
+            var inter;
+            var audio;
+            
+            function getCook()
+            {
+                var name="chatid=";
+                var dc=decodeURIComponent(document.cookie);
+                var co=dc.split(";");
+                var can=0;
+                for(var i=0;i<co.length;i++)
+                {
+                    var c=co[i];
+                    while(c.charAt(0)==' ')
+                    {
+                        c=c.substring(1);
+                    }
+                    if(c.indexOf(name)==0)
+                    {
+                        var cok=c.substring(name.length,c.length);
+                        userId=cok;
+                    }
+                    else{
+                        can++;
+                    }
+                }
+
+                if(co.length==can)
+                {
+                    window.location.href="./index.html";
+                }
+                itit_chat();
+            }
+
+            function itit_chat()
+            {
+                var http=new XMLHttpRequest();
+                http.onreadystatechange=function()
+                {
+                    if(this.status==200&&this.readyState==4)
+                    {
+                        var datas=String(http.responseText).split(";");
+                        totalLength=String(this.responseText).length;
+                        var i;
+                        for(i=1;i<datas.length-1;i=i+2)
+                        {
+                            setView(datas[i],datas[i+1]);
+                        }
+                    }
+                    
+                };
+                http.open("GET","https://souravsaha1234.000webhostapp.com/chetwebpage/initialchat.php",true);
+                http.send();
+                inter=setInterval(getData,1000);
+                document.getElementById("msg").addEventListener("keydown",function(event)
+                {
+                    if(event.keyCode==13) sendData();
+                });
+                audio=document.getElementById("myAudio");
+            }
+            function setView(uid,text)
+            {
+                var chatHolder=document.getElementById("chatsection");
+                
+                var chat=document.createElement("div");
+                var hold=document.createElement("div");
+                hold.style.width="100%";
+                hold.style.marginTop="30px";
+                hold.style.height="40px";
+                if(uid==userId)
+                {
+                    chat.classList.add("sendchat");
+                    chat.innerHTML="<font style='color: #C7AEFB; font-size: 20px;'>You</font><br>"+text;
+                }
+                else{
+                    chat.classList.add("rcvchat");
+                    chat.innerHTML="<font style='color: #C7AEFB; font-size: 20px;'>"+uid+"</font><br>"+text;
+                    audio.play();
+                }
+                
+                hold.appendChild(chat);
+                chatHolder.appendChild(hold);
+                window.scrollTo(0, chatHolder.offsetHeight);
+                
+            }
+
+            function sendData()
+            {
+                var text=document.getElementById("msg");
+                var sendText=userId+";"+text.value+";";
+                text.value="";
+                var http=new XMLHttpRequest();
+                http.onreadystatechange=function()
+                {
+                    if(this.status==0&&this.readyState==4)
+                    {
+                        text.value=sendText.split(";")[1];
+                        setAlert("NetWork Error...!");
+                    }
+                };
+                http.open("GET","https://souravsaha1234.000webhostapp.com/chetwebpage/sendText.php?data="+sendText,true);
+                http.send();
+            }
+
+            function getData()
+            {
+                //IT WILL WORK EVERY 1S
+                var http=new XMLHttpRequest();
+                clearInterval(inter);
+                http.onreadystatechange=function()
+                {
+                    if(this.status==200&&this.readyState==4)
+                    {
+                        if(String(this.responseText)!="no")
+                        {
+                            
+                            var datas=String(http.responseText).split(";");
+                            totalLength=totalLength+String(this.responseText).length-1;
+                            var i;
+                            for(i=1;i<datas.length-1;i=i+2)
+                            {
+                                setView(datas[i],datas[i+1]);
+                            }
+                        }
+                        inter=setInterval(getData,1000);
+                    }
+                    
+                };
+                http.open("GET","https://souravsaha1234.000webhostapp.com/chetwebpage/rcvmsg.php?length="+String(totalLength),true);
+                http.send();
+            }
+        </script>
+    </body>
+</html>

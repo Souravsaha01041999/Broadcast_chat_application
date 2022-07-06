@@ -1,0 +1,74 @@
+<html>
+    <head>
+        <title>CHAT</title>
+        <script src="https://souravsaha1234.000webhostapp.com/personal_diary/style/myalert.js"></script>
+        <link rel="stylesheet" href="https://souravsaha1234.000webhostapp.com/personal_diary/style/alert_style.css">
+
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <script src="https://souravsaha1234.000webhostapp.com/secure/file.js"></script>
+        <link rel="stylesheet" href="https://souravsaha1234.000webhostapp.com/removeadd/removeadd.css">
+
+        
+        
+        <style>
+            .container
+            {
+                position:absolute;
+                width: max-content;
+                padding: 50px;
+                background-color: rgb(205, 167, 198);
+                top: 200px;
+                left: 35%;
+                border-radius: 30px;
+                box-shadow: 5px 10px #615d5d;
+            }
+            .mystyle
+            {
+                width: max-content;
+                font-size: 50px;
+                position:absolute;
+                top: 50px;
+                left: 27%;
+                font-family: Brush Script Std;
+                color: darkgreen;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="myalert_style" id="myalert">
+            <font id="alert_text" class="alert_text"></font>
+        </div>
+        <div class="mystyle">
+            Welcome To Broadcast Chat
+        </div>
+        <div class="container">
+            <div class="input-group" style="width: 200px;">
+                <span class="input-group-addon" id="basic-addon1">@</span>
+                <input type="text" class="form-control" id="emailId" placeholder="Username" aria-describedby="basic-addon1" style="width: 200px;">
+              </div>
+            <br>
+            <button class="btn btn-primary" style="position: relative; left: 32%;" onclick="startsystem()">OPEN</button>
+        </div>
+
+
+        <script>
+            function startsystem()
+            {
+                var nm=String(document.getElementById("emailId").value);
+                if(nm.length>0)
+                {
+                    var d=new Date();
+                    d.setTime(d.getTime()+(24*60*60*1000));
+                    document.cookie="chatid="+nm+"; expires="+d.toGMTString()+"; path=/";
+                    window.location.href="./chat.html";
+                }
+                else{
+                    setAlert("Enter User Name");
+                }
+                
+            }
+        </script>
+    </body>
+</html>
